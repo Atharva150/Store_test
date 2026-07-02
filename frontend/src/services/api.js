@@ -7,10 +7,6 @@ const api = axios.create({
     },
 });
 
-/**
- * Automatically attach JWT token
- * before every request.
- */
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -24,17 +20,15 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-/**
- * Handle common API errors.
- */
 api.interceptors.response.use(
     (response) => response,
     (error) => {
 
         if (error.response?.status === 401) {
-            console.log("Unauthorized. Please login again.");
-        }
-
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+}
         if (error.response?.status === 403) {
             console.log("Access denied.");
         }

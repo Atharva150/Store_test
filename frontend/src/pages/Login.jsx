@@ -1,147 +1,168 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import authService from "../services/authService";
-import  useAuth  from "../hooks/useAuth";
-
+import useAuth from "../hooks/useAuth";
 
 function Login() {
-
     const navigate = useNavigate();
     const { login } = useAuth();
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        setError("");
-        try {
 
-            const response = await authService.login(formData);
+        setError("");
+
+        if (loading) return;
+
+        if (!formData.email.trim() || !formData.password.trim()) {
+            setError("Email and password are required.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await authService.login({
+                email: formData.email.trim().toLowerCase(),
+                password: formData.password,
+            });
+
+            if (!response?.token || !response?.user) {
+                throw new Error("Invalid response received from server.");
+            }
+
             login(response.token, response.user);
+
             switch (response.user.role) {
                 case "ADMIN":
-                    navigate("/admin");
+                    navigate("/admin", { replace: true });
                     break;
+
                 case "OWNER":
-                    navigate("/owner");
+                    navigate("/owner", { replace: true });
                     break;
 
                 case "USER":
-                    navigate("/stores");
+                    navigate("/stores", { replace: true });
                     break;
 
                 default:
-                    navigate("/");
+                    navigate("/login", { replace: true });
             }
-        } catch (error) {
+        } catch (err) {
+            console.error(err);
+
             setError(
-                error.message ||
-                "Login failed."
+                err?.response?.data?.message ||
+                err?.message ||
+                "Invalid email or password."
             );
         } finally {
             setLoading(false);
         }
     };
+
     return (
+        <div className="login-page">
+            <div className="login-card">
 
-<div className="login-page">
+                <h2 className="login-title">
+                    Login
+                </h2>
 
-    <div className="login-card">
+                <form
+                    className="form"
+                    onSubmit={handleSubmit}
+                    noValidate
+                >
 
-        <h2 className="login-title">
-            Login
-        </h2>
+                    <div className="form-group">
 
-        <form
-            className="form"
-            onSubmit={handleSubmit}
-        >
+                        <label
+                            htmlFor="email"
+                            className="form-label"
+                        >
+                            Email
+                        </label>
 
-            <div className="form-group">
+                        <input
+                            id="email"
+                            className="form-input"
+                            type="email"
+                            name="email"
+                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <label className="form-label">
-                    Email
-                </label>
+                    </div>
 
-                <input
-                    className="form-input"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
+                    <div className="form-group">
 
-            </div>
+                        <label
+                            htmlFor="password"
+                            className="form-label"
+                        >
+                            Password
+                        </label>
 
-            <div className="form-group">
+                        <input
+                            id="password"
+                            className="form-input"
+                            type="password"
+                            name="password"
+                            autoComplete="current-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
 
-                <label className="form-label">
-                    Password
-                </label>
+                    </div>
 
-                <input
-                    className="form-input"
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                    {error && (
+                        <p className="login-error">
+                            {error}
+                        </p>
+                    )}
 
-            </div>
+                    <button
+                        className="btn btn-primary login-button"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
 
-            {error && (
+                </form>
 
-                <p className="login-error">
-
-                    {error}
-
+                <p className="login-footer">
+                    Don't have an account?{" "}
+                    <Link to="/signup">
+                        Sign Up
+                    </Link>
                 </p>
 
-            )}
-
-            <button
-                className="btn btn-primary login-button"
-                type="submit"
-                disabled={loading}
-            >
-
-                {loading
-                    ? "Logging in..."
-                    : "Login"}
-
-            </button>
-
-        </form>
-
-        <p className="login-footer">
-
-            Don't have an account?
-
-            <Link to="/signup">
-
-                Sign Up
-
-            </Link>
-
-        </p>
-
-    </div>
-
-</div>
-
-);
+            </div>
+        </div>
+    );
 }
 
 export default Login;

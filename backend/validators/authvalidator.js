@@ -38,7 +38,9 @@ const signupValidator = [
 
     body("address")
         .trim()
-        .isLength({ max: 400 })
+        .notEmpty()
+        .isLength({ max: 400 }).
+         withMessage("Address is required")
         .withMessage("Address cannot exceed 400 characters"),
 
     validate
@@ -72,8 +74,10 @@ const updatePasswordValidator = [
         .withMessage("Password must be between 8 and 16 characters")
         .matches(/[A-Z]/)
         .withMessage("Password must contain at least one uppercase letter")
-        .matches(/[!@#$%^&*(),.?":{}|<>]/)
-        .withMessage("Password must contain at least one special character"),
+        .matches(/[^\w\s]/)
+        .withMessage("Password must contain at least one special character")
+        .notEmpty()
+        .withMessage("New password required") ,
 
     validate
 ];

@@ -1,15 +1,9 @@
-/* ===================================
-   ADMIN PAGE
-=================================== */
+
 
 .admin-page {
 
     padding: 2rem 0;
 }
-
-/* ===================================
-   PAGE TITLE
-=================================== */
 
 .admin-page h1 {
 
@@ -26,10 +20,6 @@
 
     color: var(--text-primary);
 }
-
-/* ===================================
-   DASHBOARD STATS
-=================================== */
 
 .stats-grid {
 
@@ -84,10 +74,6 @@
     color: var(--primary);
 }
 
-/* ===================================
-   USERS TABLE
-=================================== */
-
 .table td:last-child {
 
     width: 130px;
@@ -100,9 +86,6 @@
     width: 100%;
 }
 
-/* ===================================
-   EMPTY STATE
-=================================== */
 
 .admin-page > p {
 
@@ -113,9 +96,51 @@
     padding: 2rem;
 }
 
-/* ===================================
-   RESPONSIVE
-=================================== */
+.modal-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.45);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 999;
+
+}
+
+.modal {
+
+    width: 450px;
+
+    max-width: 90%;
+
+    background: white;
+
+    padding: 24px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 5px 25px rgba(0,0,0,.2);
+
+}
+
+.modal h2{
+
+    margin-bottom:20px;
+
+}
+
+.modal p{
+
+    margin-bottom:10px;
+
+}
 
 @media (max-width: 900px) {
 

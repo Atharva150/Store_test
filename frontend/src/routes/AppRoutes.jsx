@@ -10,13 +10,44 @@ import ProtectedRoute from "../components/ProtectedRoute";
 
 function AppRoutes() {
 
+    const storedUser = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+    const getDefaultRoute = () => {
+
+        if (!storedUser) {
+            return "/login";
+        }
+
+        switch (storedUser.role) {
+
+            case "ADMIN":
+                return "/admin";
+
+            case "OWNER":
+                return "/owner";
+
+            case "USER":
+                return "/stores";
+
+            default:
+                return "/login";
+        }
+    };
+
     return (
 
         <Routes>
 
             <Route
                 path="/"
-                element={<Navigate to="/login" replace />}
+                element={
+                    <Navigate
+                        to={getDefaultRoute()}
+                        replace
+                    />
+                }
             />
 
             <Route
@@ -58,13 +89,16 @@ function AppRoutes() {
 
             <Route
                 path="*"
-                element={<h2>404 - Page Not Found</h2>}
+                element={
+                    <h2>
+                        404 - Page Not Found
+                    </h2>
+                }
             />
 
         </Routes>
 
     );
-
 }
 
 export default AppRoutes;

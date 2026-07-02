@@ -11,18 +11,19 @@ const createStore = async ({
 }) => {
 
     // Check if owner exists
-    const owner = await pool.query(
-        `
-        SELECT id, role
-        FROM users
-        WHERE id = $1
-        `,
-        [owner_id]
-    );
+   const owner = await pool.query(
+    `
+    SELECT id
+    FROM users
+    WHERE id = $1
+    AND role = 'OWNER'
+    `,
+    [owner_id]
+);
 
-    if (owner.rows.length === 0) {
-        throw new Error("Store owner not found.");
-    }
+if (owner.rows.length === 0) {
+    throw new Error("Invalid store owner.");
+}
 
     if (owner.rows[0].role !== "OWNER") {
         throw new Error("Selected user is not a store owner.");
@@ -48,24 +49,37 @@ const createStore = async ({
     return result.rows[0];
 };
 
-/**
- * Get all stores
- */
 const getAllStores = async () => {
 
     const result = await pool.query(
         `
         SELECT
-            s.id,
-            s.name,
-            s.email,
-            s.address,
-            s.owner_id,
-            s.created_at
 
-        FROM stores s
+    s.id,
 
-        ORDER BY s.name ASC
+    s.name,
+
+    s.email,
+
+    s.address,
+
+    s.owner_id,
+
+    s.created_at,
+
+    ROUND(AVG(r.rating),2) AS average_rating
+
+FROM stores s
+
+LEFT JOIN ratings r
+
+ON s.id = r.store_id
+
+GROUP BY
+
+    s.id
+
+ORDER BY s.name ASC
         `
     );
 

@@ -1,15 +1,9 @@
-/* ===================================
-   STORES PAGE
-=================================== */
-
+    
 .stores-page {
 
     padding: 2rem 0;
 }
 
-/* ===================================
-   PAGE TITLE
-=================================== */
 .stores-header {
 
     display: flex;
@@ -34,9 +28,6 @@
     color: var(--text-primary);
 }
 
-/* ===================================
-   SEARCH
-=================================== */
 
 .search-input {
 
@@ -47,9 +38,6 @@
     margin-bottom: 2rem;
 }
 
-/* ===================================
-   STORE CARD
-=================================== */
 
 .store-card {
 
@@ -75,10 +63,6 @@
     box-shadow: var(--shadow-md);
 }
 
-/* ===================================
-   STORE TITLE
-=================================== */
-
 .store-card h3 {
 
     margin-bottom: 1rem;
@@ -87,10 +71,6 @@
 
     font-size: 1.3rem;
 }
-
-/* ===================================
-   STORE DETAILS
-=================================== */
 
 .store-card p {
 
@@ -104,9 +84,6 @@
     color: var(--text-primary);
 }
 
-/* ===================================
-   RATING SECTION
-=================================== */
 
 .store-rating-section {
 
@@ -133,10 +110,6 @@
     width: 170px;
 }
 
-/* ===================================
-   EMPTY STATE
-=================================== */
-
 .stores-page > p {
 
     margin-top: 3rem;
@@ -148,9 +121,25 @@
     font-size: 1.1rem;
 }
 
-/* ===================================
-   RESPONSIVE
-=================================== */
+.password-card{
+
+    margin-bottom:30px;
+
+}
+
+.password-card form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    max-width:400px;
+
+}
+
+
 
 @media (max-width: 768px) {
 

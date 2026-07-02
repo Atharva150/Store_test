@@ -28,33 +28,33 @@ const getDashboard = async () => {
 //     }
 // };
 
-// const getStoreRatings = async () => {
-//     try {
-//         const response = await api.get(
-//             "/owner/ratings"
-//         );
-//         return response.data;
-//     } catch (error) {
-//         throw (
-//             error.response?.data ||
-//             { message: "Failed to fetch ratings" }
-//         );
-//     }
-// };
+const getStoreRatings = async () => {
+    try {
+        const response = await api.get(
+            "/owner/ratings"
+        );
+        return response.data;
+    } catch (error) {
+        throw (
+            error.response?.data ||
+            { message: "Failed to fetch ratings" }
+        );
+    }
+};
 
-// const getRatingUsers = async () => {
-//     try {
-//         const response = await api.get(
-//             "/owner/ratings/users"
-//         );
-//         return response.data;
-//     } catch (error) {
-//         throw (
-//             error.response?.data ||
-//             { message: "Failed to fetch rating users" }
-//         );
-//     }
-// };
+const getRatingUsers = async () => {
+    try {
+        const response = await api.get(
+            "/owner/ratings/users"
+        );
+        return response.data;
+    } catch (error) {
+        throw (
+            error.response?.data ||
+            { message: "Failed to fetch rating users" }
+        );
+    }
+};
 
 const getAverageRating = async () => {
     try {
@@ -73,7 +73,7 @@ const getAverageRating = async () => {
 export default {
     getDashboard,
     // getMyStore,
-    // getStoreRatings,
-    // getRatingUsers,
+    getStoreRatings,
+    getRatingUsers,
     getAverageRating,
 };

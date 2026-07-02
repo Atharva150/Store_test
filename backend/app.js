@@ -24,6 +24,7 @@ app.get("/", (req, res) => {
 
 });
 
+
 app.use("/api/auth", authRoutes);
 
 app.use("/api/stores", storeRoutes);
@@ -33,5 +34,18 @@ app.use("/api/ratings", ratingRoutes);
 app.use('/api/admin',adminRoutes)
 
 app.use('/api/owner',ownerRoutes)
+
+
+app.use((req,res)=>{
+
+return res.status(404).json({
+
+success:false,
+
+message:"Route not found"
+
+});
+
+});
 
 module.exports = app;

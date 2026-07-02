@@ -14,9 +14,7 @@ const signup = async (req, res) => {
             success: false,
             message: error.message,
         });
-
     }
-
 };
 
 const login = async (req, res) => {

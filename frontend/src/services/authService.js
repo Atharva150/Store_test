@@ -6,14 +6,21 @@ const login = async (credentials) => {
             "/auth/login",
             credentials
         );
+
+        if (!response.data?.token || !response.data?.user) {
+            throw new Error("Invalid login response from server.");
+        }
+
         return response.data;
+
     } catch (error) {
-        throw (
-            error.response?.data ||
-            {
-                message: "Login failed."
-            }
+
+        throw new Error(
+            error.response?.data?.message ||
+            error.message ||
+            "Login failed."
         );
+
     }
 };
 
@@ -23,24 +30,41 @@ const signup = async (userData) => {
             "/auth/signup",
             userData
         );
+
         return response.data;
+
     } catch (error) {
-        throw (
-            error.response?.data ||
-            {
-                message: "Signup failed."
-            }
+
+        throw new Error(
+            error.response?.data?.message ||
+            error.message ||
+            "Signup failed."
         );
+
     }
 };
 
-const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+const updatePassword = async (passwordData) => {
+    try {
+        const response = await api.patch(
+            "/auth/password",
+            passwordData
+        );
+
+        return response.data;
+
+    } catch (error) {
+
+        throw new Error(
+            error.response?.data?.message ||
+            error.message ||
+            "Password update failed."
+        );
+    }
 };
 
 export default {
     login,
     signup,
-    logout,
+    updatePassword,
 };

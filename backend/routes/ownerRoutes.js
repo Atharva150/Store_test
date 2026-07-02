@@ -24,6 +24,12 @@ router.get(
     ownerController.getAverageRating
 );
 
+
+// router.get(
+//     "/ratings",
+//     ownerController.getStoreRatings
+// );
+
 module.exports = router;
 
 

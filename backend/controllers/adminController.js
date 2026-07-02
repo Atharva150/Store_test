@@ -1,9 +1,6 @@
 const adminService = require("../services/adminService");
 
-/**
- * Dashboard Statistics
- * GET /api/admin/dashboard
- */
+
 const getDashboardStats = async (req, res) => {
     try {
 
@@ -24,10 +21,6 @@ const getDashboardStats = async (req, res) => {
     }
 };
 
-/**
- * Create User
- * POST /api/admin/users
- */
 const createUser = async (req, res) => {
     try {
 
@@ -49,10 +42,25 @@ const createUser = async (req, res) => {
     }
 };
 
-/**
- * Get All Users
- * GET /api/admin/users
- */
+const createStore = async (req, res) => {
+
+    try {
+        console.log("BODY:", req.body);
+        const store = await adminService.createStore(req.body);
+
+        return res.status(201).json({
+            success: true,
+            message: "Store created successfully.",
+            data: store
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const getAllUsers = async (req, res) => {
     try {
 
@@ -74,10 +82,7 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-/**
- * Get User By ID
- * GET /api/admin/users/:id
- */
+
 const getUserById = async (req, res) => {
     try {
 
@@ -100,10 +105,6 @@ const getUserById = async (req, res) => {
     }
 };
 
-/**
- * Get All Stores
- * GET /api/admin/stores
- */
 const getAllStores = async (req, res) => {
     try {
 
@@ -125,10 +126,28 @@ const getAllStores = async (req, res) => {
     }
 };
 
-/**
- * Search Users
- * GET /api/admin/users/search?keyword=value
- */
+const getOwners = async (req, res) => {
+
+    try {
+
+        const owners = await adminService.getOwners();
+
+        return res.status(200).json({
+            success: true,
+            data: owners
+        });
+
+    } catch (error) {
+
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
 const searchUsers = async (req, res) => {
     try {
 
@@ -152,10 +171,6 @@ const searchUsers = async (req, res) => {
     }
 };
 
-/**
- * Search Stores
- * GET /api/admin/stores/search?keyword=value
- */
 const searchStores = async (req, res) => {
     try {
 
@@ -179,13 +194,38 @@ const searchStores = async (req, res) => {
     }
 };
 
+const deleteUser = async (req, res) => {
+
+    try {
+
+        await adminService.deleteUser(req.params.id);
+
+        return res.status(200).json({
+            success: true,
+            message: "User deleted successfully."
+        });
+
+    } catch (error) {
+
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+
+    }
+
+};
+
 module.exports = {
     getDashboardStats,
     createUser,
+    createStore,
     getAllUsers,
     getUserById,
     getAllStores,
+    getOwners,
     searchUsers,
     searchStores,
+    deleteUser
 };
 

@@ -100,16 +100,30 @@ const getUserById = async (id) => {
     const result = await pool.query(
         `
         SELECT
-            id,
-            name,
-            email,
-            address,
-            role,
-            created_at
 
-        FROM users
+u.id,
 
-        WHERE id = $1
+u.name,
+
+u.email,
+
+u.address,
+
+u.role,
+
+ROUND(AVG(r.rating),2) AS average_rating
+
+FROM users u
+
+LEFT JOIN stores s
+ON s.owner_id = u.id
+
+LEFT JOIN ratings r
+ON r.store_id = s.id
+
+WHERE u.id=$1
+
+GROUP BY u.id;
         `,
         [id]
     );
@@ -125,21 +139,117 @@ const getAllStores = async () => {
     const result = await pool.query(
         `
         SELECT
-            s.id,
-            s.name,
-            s.email,
-            s.address,
-            u.name AS owner_name
+
+        s.id,
+
+        s.name,
+
+        s.email,
+
+        s.address,
+
+        s.owner_id,
+
+        s.created_at,
+
+        ROUND(AVG(r.rating),2) AS average_rating
 
         FROM stores s
 
-        JOIN users u
-        ON s.owner_id = u.id
+        LEFT JOIN ratings r
 
-        ORDER BY s.name
+        ON s.id = r.store_id
+
+        GROUP BY
+
+        s.id
+
+        ORDER BY s.name;
         `
     );
     return result.rows;
+};
+
+const getOwners = async () => {
+
+    const result = await pool.query(
+        `
+        SELECT
+            id,
+            name,
+            email
+
+        FROM users
+
+        WHERE role = 'OWNER'
+
+        ORDER BY name
+        `
+    );
+
+    return result.rows;
+
+};
+
+const createStore = async (storeData) => {
+    console.log("Received storeData:", storeData);
+    const {
+        name,
+        email,
+        address,
+        owner_id
+    } = storeData;
+
+    console.log(storeData);
+
+    const owner = await pool.query(
+
+        `
+        SELECT id
+
+        FROM users
+
+        WHERE id = $1
+        AND role = 'OWNER'
+        `,
+
+        [owner_id]
+
+    );
+        console.log(owner.rows);
+    if (owner.rows.length === 0) {
+
+        throw new Error("Invalid store owner.");
+
+    }
+
+    const result = await pool.query(
+
+        `
+        INSERT INTO stores
+        (
+            name,
+            email,
+            address,
+            owner_id
+        )
+
+        VALUES ($1,$2,$3,$4)
+
+        RETURNING *;
+        `,
+
+        [
+            name,
+            email,
+            address,
+            owner_id
+        ]
+
+    );
+
+    return result.rows[0];
+
 };
 
 const searchUsers = async (keyword) => {
@@ -195,14 +305,38 @@ const searchStores = async (keyword) => {
 
 };
 
+const deleteUser = async (id) => {
+
+    const result = await pool.query(
+        `
+        DELETE FROM users
+
+        WHERE id = $1
+
+        RETURNING *
+        `,
+        [id]
+    );
+
+    if (result.rows.length === 0) {
+        throw new Error("User not found.");
+    }
+
+    return result.rows[0];
+
+};
+
 module.exports = {
     getDashboardStats,
     createUser,
+    createStore,
     getAllUsers,
     getUserById,
     getAllStores,
+    getOwners,
     searchUsers,
     searchStores,
+    deleteUser
 };
 
 

@@ -37,6 +37,16 @@ router.get(
 );
 
 router.get(
+    "/owners",
+    adminController.getOwners
+);
+
+router.post(
+    "/stores",
+    adminController.createStore
+);
+
+router.get(
     "/stores",
     adminController.getAllStores
 );
@@ -44,6 +54,11 @@ router.get(
 router.get(
     "/stores/search",
     adminController.searchStores
+);
+
+router.delete(
+    "/users/:id",
+    adminController.deleteUser
 );
 
 module.exports = router;

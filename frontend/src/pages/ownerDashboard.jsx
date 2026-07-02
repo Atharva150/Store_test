@@ -15,25 +15,44 @@ function OwnerDashboard() {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+
+    const [passwordForm, setPasswordForm] = useState({
+
+    oldPassword: "",
+
+    newPassword: ""
+
+});
+
 const loadData = async () => {
     try {
         setLoading(true);
         setError("");
 
-        const [ /* storeData, */ ratingsData, /* usersData, */ avgData ] = 
-            await Promise.allSettled([
-                // ownerService.getMyStore(),           // remove for now
-                ownerService.getStoreRatings(),
-                // ownerService.getRatingUsers(),
-                ownerService.getAverageRating(),
-            ]);
+       const [ratingsData, usersData, avgData] =
+    await Promise.allSettled([
+        ownerService.getStoreRatings(),
+        ownerService.getRatingUsers(),
+        ownerService.getAverageRating(),
+    ]);
 
-        // setStore(storeData.status === 'fulfilled' ? storeData.value : null);
-        setRatings(ratingsData.status === 'fulfilled' ? ratingsData.value : []);
-        // setUsers(usersData.status === 'fulfilled' ? usersData.value : []);
-        setAverage(avgData.status === 'fulfilled' 
-            ? (avgData.value?.data?.averageRating ?? avgData.value?.data?.average ?? avgData.value) 
-            : null);
+setRatings(
+    ratingsData.status === "fulfilled"
+        ? ratingsData.value.data
+        : []
+);
+
+setUsers(
+    usersData.status === "fulfilled"
+        ? usersData.value.data
+        : []
+);
+
+setAverage(
+    avgData.status === "fulfilled"
+        ? avgData.value.data.average_rating
+        : null
+);
 
     } catch (err) {
         setError(err.message || "Failed to load dashboard");
@@ -41,6 +60,47 @@ const loadData = async () => {
         setLoading(false);
     }
 };
+
+const handlePasswordChange = (e) => {
+
+    setPasswordForm({
+
+        ...passwordForm,
+
+        [e.target.name]: e.target.value
+
+    });
+
+};
+
+const handleUpdatePassword = async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+        await authService.updatePassword(passwordForm);
+
+        alert("Password updated.");
+
+        setPasswordForm({
+
+            oldPassword: "",
+
+            newPassword: ""
+
+        });
+
+    }
+
+    catch(err){
+
+        alert(err.message);
+
+    }
+
+};
+
 
     useEffect(() => {
 
@@ -58,18 +118,6 @@ const loadData = async () => {
 
             <h1>Owner Dashboard</h1>
 
-            {/* STORE INFO */}
-            <div className="owner-card">
-
-                <h2>My Store</h2>
-
-                <p><b>Name:</b> {store?.name}</p>
-
-                <p><b>Address:</b> {store?.address}</p>
-
-            </div>
-
-            {/* AVERAGE RATING */}
             <div className="owner-card">
 
                 <h2>Average Rating</h2>
@@ -77,6 +125,41 @@ const loadData = async () => {
                 <h1>{average ?? "No ratings yet"}</h1>
 
             </div>
+
+<div className="owner-card">
+
+            <h2>Update Password</h2>
+
+            <form onSubmit={handleUpdatePassword}>
+
+                <input
+                    className="form-input"
+                    type="password"
+                    name="oldPassword"
+                    placeholder="Old Password"
+                    value={passwordForm.oldPassword}
+                    onChange={handlePasswordChange}
+                />
+
+                <input
+                    className="form-input"
+                    type="password"
+                    name="newPassword"
+                    placeholder="New Password"
+                    value={passwordForm.newPassword}
+                    onChange={handlePasswordChange}
+                />
+
+                <button
+                    className="btn btn-primary"
+                    type="submit"
+                >
+                    Update Password
+                </button>
+
+            </form>
+
+        </div>
 
             {/* RATINGS LIST */}
             <div className="owner-card">

@@ -28,6 +28,29 @@ const getAllUsers = async () => {
     }
 };
 
+const getOwners = async () => {
+
+    try {
+
+        const response = await api.get(
+            "/admin/owners"
+        );
+
+        return response.data;
+
+    } catch (error) {
+
+        throw (
+            error.response?.data ||
+            {
+                message: "Failed to fetch owners."
+            }
+        );
+
+    }
+
+};
+
 const getUserById = async (id) => {
     try {
         const response = await api.get(
@@ -55,6 +78,53 @@ const createUser = async (userData) => {
             { message: "Failed to create user" }
         );
     }
+};
+
+const createStore = async (storeData) => {
+    try {
+        const response = await api.post(
+            "/admin/stores",
+            storeData
+        );
+
+        return response.data;
+
+    } catch (error) {
+
+        console.log(error.response?.data);
+
+        throw (
+            error.response?.data ||
+            {
+                message:"Failed to create store"
+            }
+        );
+
+    }
+};
+
+const searchUsers = async (keyword) => {
+
+    const response = await api.get(
+
+        `/admin/users/search?keyword=${keyword}`
+
+    );
+
+    return response.data;
+
+};
+
+const searchStores = async (keyword) => {
+
+    const response = await api.get(
+
+        `/admin/stores/search?keyword=${keyword}`
+
+    );
+
+    return response.data;
+
 };
 
 const updateUser = async (id, userData) => {
@@ -104,7 +174,12 @@ export default {
     getDashboard,
     getAllUsers,
     getUserById,
+    getOwners,
     createUser,
+    createStore,
     updateUser,
     deleteUser,
-    getAllStores,};
+    getAllStores,
+    searchStores,
+    searchUsers
+};
